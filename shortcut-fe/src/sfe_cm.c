@@ -29,6 +29,7 @@
 #include <net/netfilter/nf_conntrack_helper.h>
 #include <net/netfilter/nf_conntrack_zones.h>
 #include <net/netfilter/nf_conntrack_core.h>
+#include <net/netfilter/nf_conntrack_l4proto.h>
 #include <linux/netfilter/xt_dscp.h>
 #include <linux/if_bridge.h>
 #include <linux/version.h>
@@ -897,6 +898,8 @@ static void sfe_cm_sync_rule(struct sfe_connection_sync *sis)
 
 #if (LINUX_VERSION_CODE >= KERNEL_VERSION(4, 19, 0))
 				timeouts = nf_ct_timeout_lookup(ct);
+				if (!timeouts)
+					timeouts = nf_udp_pernet(&init_net)->timeouts;
 #else
 				struct nf_conntrack_l4proto *l4proto;
 
